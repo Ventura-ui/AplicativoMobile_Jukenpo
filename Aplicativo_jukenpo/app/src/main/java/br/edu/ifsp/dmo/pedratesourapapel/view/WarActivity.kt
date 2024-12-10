@@ -38,16 +38,9 @@ class WarActivity : AppCompatActivity(){
         if (weaponPlayer1 != null && weaponPlayer2 != null) {
             winner = war.toBattle(weaponPlayer1!!, weaponPlayer2!!)
             if (winner != null) {
-                Toast.makeText(
-                    this,
-                    "${getString(R.string.winner)} ${winner.nome}",
-                    Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "${getString(R.string.winner)} ${winner.nome}", Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.draw),
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(this, getString(R.string.draw), Toast.LENGTH_LONG).show()
             }
             weaponPlayer1 = null
             weaponPlayer2 = null
@@ -61,11 +54,7 @@ class WarActivity : AppCompatActivity(){
             } else {
                 war.opponent2.nome
             }
-            Toast.makeText(
-                this,
-                "$name${getString(R.string.chhose_gum_player)}",
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(this, "$name${getString(R.string.chhose_gum_player)}", Toast.LENGTH_LONG).show()
         }
     }
 

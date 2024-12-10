@@ -2,7 +2,6 @@ package br.edu.ifsp.dmo.pedratesourapapel.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
