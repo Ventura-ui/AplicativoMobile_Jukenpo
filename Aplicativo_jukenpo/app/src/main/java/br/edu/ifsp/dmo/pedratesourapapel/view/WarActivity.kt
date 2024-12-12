@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.dmo.pedratesourapapel.R
 import br.edu.ifsp.dmo.pedratesourapapel.databinding.ActivityWarBinding
+import br.edu.ifsp.dmo.pedratesourapapel.model.Bot_player
 import br.edu.ifsp.dmo.pedratesourapapel.model.Player
 import br.edu.ifsp.dmo.pedratesourapapel.model.War
 import br.edu.ifsp.dmo.pedratesourapapel.model.Weapon
@@ -21,6 +22,7 @@ class WarActivity : AppCompatActivity(){
     private lateinit var war: War
     private var weaponPlayer1: Weapon? = null
     private var weaponPlayer2: Weapon? = null
+    private lateinit var bot: Bot_player
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,10 @@ class WarActivity : AppCompatActivity(){
 
     private fun battle() {
         val winner: Player?
-        if (weaponPlayer1 != null && weaponPlayer2 != null) {
+        if (weaponPlayer1 != null && weaponPlayer2 != null || ::bot.isInitialized) {
+            if(weaponPlayer2 == null && ::bot.isInitialized){
+                weaponPlayer2 = bot.chooseWeapon()
+            }
             winner = war.toBattle(weaponPlayer1!!, weaponPlayer2!!)
             if (winner != null) {
                 Toast.makeText(this, "${getString(R.string.winner)} ${winner.nome}", Toast.LENGTH_LONG).show()
@@ -68,20 +73,20 @@ class WarActivity : AppCompatActivity(){
     private fun configResultLauncher(){
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
                 result -> if(result.resultCode == Activity.RESULT_OK) {
-                val extras = result.data?.extras
-                if (extras != null) {
-                    val number =
-                        extras.getInt(Constants.KEY_PLAYER_NUMBER)
-                    val chosenWeapon: Weapon = extras.getSerializable(
-                        Constants.KEY_WEAPON,
-                        Weapon::class.java
-                    ) as Weapon
-                    if (number == 1)
-                        weaponPlayer1 = chosenWeapon
-                    if (number == 2)
-                        weaponPlayer2 = chosenWeapon
-                }
+            val extras = result.data?.extras
+            if (extras != null) {
+                val number =
+                    extras.getInt(Constants.KEY_PLAYER_NUMBER)
+                val chosenWeapon: Weapon = extras.getSerializable(
+                    Constants.KEY_WEAPON,
+                    Weapon::class.java
+                ) as Weapon
+                if (number == 1)
+                    weaponPlayer1 = chosenWeapon
+                if (number == 2)
+                    weaponPlayer2 = chosenWeapon
             }
+        }
         }
     }
 
@@ -91,7 +96,14 @@ class WarActivity : AppCompatActivity(){
             val p1 = extras.getString(Constants.KEY_PLAYER_1)
             val p2 = extras.getString(Constants.KEY_PLAYER_2)
             val number = extras.getInt(Constants.KEY_ROUNDS)
-            war = War(number, p1!!, p2!!)
+            val isBot = extras.getBoolean("IS_BOT")
+
+            if(isBot){
+                bot = Bot_player(p2!!)
+                war = War(number, p1!!, bot.nome)
+            }else{
+                war = War(number, p1!!, p2!!)
+            }
         }
     }
 

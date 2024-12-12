@@ -43,10 +43,16 @@ class MainActivity : AppCompatActivity() {
             else -> 5
         }
 
+        val isBot = binding.checkBot.isChecked
         val mIntent = Intent(this, WarActivity::class.java)
         mIntent.putExtra(Constants.KEY_PLAYER_1, binding.edittextPlayer1.text.toString())
-        mIntent.putExtra(Constants.KEY_PLAYER_2, binding.edittextPlayer2.text.toString())
+        if(isBot){
+            mIntent.putExtra(Constants.KEY_PLAYER_2, "Bot")
+        }else{
+            mIntent.putExtra(Constants.KEY_PLAYER_2, binding.edittextPlayer2.text.toString())
+        }
         mIntent.putExtra(Constants.KEY_ROUNDS, battles)
+        mIntent.putExtra("IS_BOT", isBot)
         startActivity(mIntent)
     }
 }
